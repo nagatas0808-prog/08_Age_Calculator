@@ -4,246 +4,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>年齢・日数計算ツール PRO | 生年月日から年齢・経過日数を瞬時に算出</title>
-    <meta name="description" content="生年月日を入力するだけで年齢・経過日数・次の誕生日までの日数を瞬時に計算。干支・星座・曜日も表示。完全無料の年齢計算ツール。">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>年齢計算くん - 便利ツール集</title>
+    <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } } }
-    </script>
     <style>
         body {
-            background-color: #020617;
-            color: #f8fafc;
-            background-image: radial-gradient(at 0% 0%, hsla(30, 40%, 10%, 1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(40, 39%, 15%, 0.2) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(20, 49%, 15%, 0.2) 0, transparent 50%);
-            background-attachment: fixed;
+            background-color: #fce4ec;
+            /* 懐かしのパステルピンク */
+            color: #4e342e;
+            font-family: "MS PGothic", "MS Pゴシック", sans-serif;
+            margin: 20px;
         }
 
-        .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .container {
+            width: 700px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 3px double #f06292;
+            padding: 15px;
+            box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.1);
         }
 
-        .gradient-text {
-            background: linear-gradient(to right, #fbbf24, #f97316);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 {
+            color: #ffffff;
+            background-color: #f06292;
+            padding: 5px;
+            font-size: 20px;
+            text-align: center;
+            margin: -15px -15px 15px -15px;
+            border-bottom: 2px solid #880e4f;
         }
 
-        .stat-card {
-            transition: transform 0.2s ease;
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
+        .main-table td {
+            border: 1px solid #f8bbd0;
+            padding: 10px;
         }
 
-        .countdown-num {
-            font-variant-numeric: tabular-nums;
+        .label {
+            background-color: #fdf0f5;
+            font-weight: bold;
+            width: 150px;
+            font-size: 13px;
+        }
+
+        .result-box {
+            background-color: #fff9fb;
+            border: 1px inset #f06292;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .age-num {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d81b60;
+            font-family: 'Comic Sans MS', cursive;
+            /* 当時のWeb風 */
+        }
+
+        .sub-info {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .eto-img {
+            float: right;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: #fff;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            border-top: 1px dotted #999999;
+            padding-top: 10px;
+        }
+
+        a {
+            color: #d81b60;
+        }
+
+        input[type="date"] {
+            font-family: inherit;
+            border: 1px solid #f06292;
+            padding: 5px;
         }
     </style>
-    <meta name="google-site-verification" content="nDfNlMk2wvPV-koGT7Ur1MandTe503qb1CQ0kJw6fdA" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5383957100145583"
-        crossorigin="anonymous"></script>
 </head>
 
-<body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight"><span class="gradient-text">Age
-                    Calculator</span> PRO</h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">生年月日を入力するだけ。年齢・経過日数・誕生日カウントダウンを瞬時に算出。</p>
-        </div>
-        <div class="mb-10 text-center flex justify-center w-full min-h-[90px]"><!-- ■■■ 広告タグ貼り付け位置（トップ） ■■■ --></div>
+<body>
+    <div class="container">
+        <h1>🐾 年齢計算くん (Age & Profile)</h1>
+
         <div id="root"></div>
 
-        <!-- SEO -->
-        <div class="mt-16 pt-12 border-t border-slate-800/80">
-            <section class="mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white flex items-center"><span
-                        class="w-1.5 h-8 bg-amber-500 rounded-full mr-4 inline-block"></span>Age Calculator PRO とは？</h2>
-                <div class="space-y-4 text-slate-300 leading-relaxed text-base">
-                    <p>「Age Calculator
-                        PRO」は、<strong>生年月日を入力するだけで、現在の年齢（年・月・日単位）、生まれてからの総日数、次の誕生日までの日数を瞬時に算出する完全無料のWebツール</strong>です。
-                    </p>
-                    <p>履歴書の作成、保険や年金の計算、子どもの月齢確認など、正確な年齢計算が必要な場面で活躍します。干支・星座・生まれた曜日の表示にも対応しています。</p>
-                </div>
-            </section>
-            <section class="mb-12">
-                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-white flex items-center"><span
-                        class="w-1.5 h-8 bg-orange-500 rounded-full mr-4 inline-block"></span>活用シーン</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50">
-                        <h3 class="text-lg font-bold text-white mb-2">📝 履歴書・書類</h3>
-                        <p class="text-sm text-slate-400">「満年齢」を正確に計算。和暦変換と合わせて、書類作成をスムーズに。</p>
-                    </div>
-                    <div class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50">
-                        <h3 class="text-lg font-bold text-white mb-2">👶 育児・月齢</h3>
-                        <p class="text-sm text-slate-400">赤ちゃんの月齢や、「生後何日目」を正確に把握。予防接種スケジュールの確認にも。</p>
-                    </div>
-                    <div class="bg-slate-800/40 rounded-xl p-6 border border-slate-700/50">
-                        <h3 class="text-lg font-bold text-white mb-2">🎂 誕生日</h3>
-                        <p class="text-sm text-slate-400">次の誕生日まであと何日かをカウントダウン。記念日の計算にも使えます。</p>
-                    </div>
-                </div>
-            </section>
+        <div class="footer">
+            [ <a href="../00_Portal/index.html">便利ツール集ポータルへ戻る</a> ]
         </div>
-        <div class="mt-12 text-center flex justify-center w-full min-h-[250px]"><!-- ■■■ 広告タグ貼り付け位置（ボトム） ■■■ --></div>
     </div>
 
     <script type="text/babel">
-        const ZODIAC_SIGNS = [
-            { name: '山羊座 ♑', start: [1, 1], end: [1, 19] }, { name: '水瓶座 ♒', start: [1, 20], end: [2, 18] },
-            { name: '魚座 ♓', start: [2, 19], end: [3, 20] }, { name: '牡羊座 ♈', start: [3, 21], end: [4, 19] },
-            { name: '牡牛座 ♉', start: [4, 20], end: [5, 20] }, { name: '双子座 ♊', start: [5, 21], end: [6, 21] },
-            { name: '蟹座 ♋', start: [6, 22], end: [7, 22] }, { name: '獅子座 ♌', start: [7, 23], end: [8, 22] },
-            { name: '乙女座 ♍', start: [8, 23], end: [9, 22] }, { name: '天秤座 ♎', start: [9, 23], end: [10, 23] },
-            { name: '蠍座 ♏', start: [10, 24], end: [11, 22] }, { name: '射手座 ♐', start: [11, 23], end: [12, 21] },
-            { name: '山羊座 ♑', start: [12, 22], end: [12, 31] },
+        const ETO = ['子(ね)', '丑(うし)', '寅(とら)', '卯(うさぎ)', '辰(たつ)', '巳(へび)', '午(うま)', '未(ひつじ)', '申(さる)', '酉(とり)', '戌(いぬ)', '亥(い)'];
+        const ZODIAC = [
+            { name: '山羊座', start: [1, 1], end: [1, 19] }, { name: '水瓶座', start: [1, 20], end: [2, 18] },
+            { name: '魚座', start: [2, 19], end: [3, 20] }, { name: '牡羊座', start: [3, 21], end: [4, 19] },
+            { name: '牡牛座', start: [4, 20], end: [5, 20] }, { name: '双子座', start: [5, 21], end: [6, 21] },
+            { name: '蟹座', start: [6, 22], end: [7, 22] }, { name: '獅子座', start: [7, 23], end: [8, 22] },
+            { name: '乙女座', start: [8, 23], end: [9, 22] }, { name: '天秤座', start: [9, 23], end: [10, 23] },
+            { name: '蠍座', start: [10, 24], end: [11, 22] }, { name: '射手座', start: [11, 23], end: [12, 21] },
+            { name: '山羊座', start: [12, 22], end: [12, 31] },
         ];
-        const ETO = ['子(ねずみ)', '丑(うし)', '寅(とら)', '卯(うさぎ)', '辰(たつ)', '巳(へび)', '午(うま)', '未(ひつじ)', '申(さる)', '酉(とり)', '戌(いぬ)', '亥(いのしし)'];
-        const DAYS_JP = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
-
-        function getZodiac(m, d) {
-            const md = m * 100 + d;
-            for (const z of ZODIAC_SIGNS) {
-                const s = z.start[0] * 100 + z.start[1];
-                const e = z.end[0] * 100 + z.end[1];
-                if (md >= s && md <= e) return z.name;
-            }
-            return '山羊座 ♑';
-        }
-        function getEto(year) { return ETO[(year - 4) % 12]; }
 
         const App = () => {
             const [birthDate, setBirthDate] = React.useState('');
             const [result, setResult] = React.useState(null);
-            const [now, setNow] = React.useState(new Date());
 
             React.useEffect(() => {
-                const timer = setInterval(() => setNow(new Date()), 1000);
-                return () => clearInterval(timer);
-            }, []);
-
-            React.useEffect(() => {
-                if (!birthDate) { setResult(null); return; }
+                if (!birthDate) return;
                 const birth = new Date(birthDate);
-                if (isNaN(birth.getTime())) { setResult(null); return; }
+                const today = new Date();
 
-                const today = now;
-                let years = today.getFullYear() - birth.getFullYear();
-                let months = today.getMonth() - birth.getMonth();
-                let days = today.getDate() - birth.getDate();
-                if (days < 0) { months--; const prev = new Date(today.getFullYear(), today.getMonth(), 0); days += prev.getDate(); }
-                if (months < 0) { years--; months += 12; }
+                let age = today.getFullYear() - birth.getFullYear();
+                const m = today.getMonth() - birth.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
 
-                const totalDays = Math.floor((today - birth) / (1000 * 60 * 60 * 24));
-                const totalWeeks = Math.floor(totalDays / 7);
-                const totalMonths = years * 12 + months;
-                const totalHours = totalDays * 24 + today.getHours();
+                const diffTime = Math.abs(today - birth);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                // 次の誕生日
-                let nextBday = new Date(today.getFullYear(), birth.getMonth(), birth.getDate());
-                if (nextBday <= today) nextBday = new Date(today.getFullYear() + 1, birth.getMonth(), birth.getDate());
-                const daysUntilBday = Math.ceil((nextBday - today) / (1000 * 60 * 60 * 24));
+                const eto = ETO[(birth.getFullYear() - 4) % 12];
 
-                const zodiac = getZodiac(birth.getMonth() + 1, birth.getDate());
-                const eto = getEto(birth.getFullYear());
-                const dayOfWeek = DAYS_JP[birth.getDay()];
+                const md = (birth.getMonth() + 1) * 100 + birth.getDate();
+                const zodiac = ZODIAC.find(z => {
+                    const s = z.start[0] * 100 + z.start[1];
+                    const e = z.end[0] * 100 + z.end[1];
+                    return md >= s && md <= e;
+                })?.name || '山羊座';
 
-                setResult({ years, months, days, totalDays, totalWeeks, totalMonths, totalHours, daysUntilBday, zodiac, eto, dayOfWeek, nextAge: years + 1 });
-            }, [birthDate, now]);
-
-            const StatCard = ({ emoji, value, label, color }) => (
-                <div className={`stat-card glass rounded-xl p-4 text-center`}>
-                    <div className="text-2xl mb-1">{emoji}</div>
-                    <div className={`text-2xl md:text-3xl font-bold countdown-num ${color}`}>{value}</div>
-                    <div className="text-xs text-slate-400 mt-1">{label}</div>
-                </div>
-            );
+                setResult({ age, diffDays, eto, zodiac });
+            }, [birthDate]);
 
             return (
-                <div className="space-y-6">
-                    {/* 入力 */}
-                    <div className="glass rounded-2xl p-6 shadow-xl">
-                        <h2 className="text-xl font-semibold mb-4 flex items-center">
-                            <span className="mr-2">🎂</span> 生年月日を入力
-                        </h2>
-                        <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)}
-                            max={new Date().toISOString().split('T')[0]}
-                            className="w-full md:w-auto bg-slate-800 border border-slate-700 rounded-lg px-6 py-4 text-white text-xl focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all" />
-                    </div>
+                <div>
+                    <table class="main-table">
+                        <tr>
+                            <td class="label">あなたの生年月日</td>
+                            <td>
+                                <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
+                            </td>
+                        </tr>
+                    </table>
 
                     {result && (
-                        <>
-                            {/* メイン年齢 */}
-                            <div className="glass rounded-2xl p-8 shadow-xl text-center">
-                                <div className="text-slate-400 text-sm mb-2">あなたの年齢</div>
-                                <div className="flex items-baseline justify-center gap-3 flex-wrap">
-                                    <div><span className="text-5xl md:text-7xl font-bold text-amber-400 countdown-num">{result.years}</span><span className="text-2xl text-slate-400 ml-1">歳</span></div>
-                                    <div><span className="text-3xl md:text-4xl font-bold text-orange-400 countdown-num">{result.months}</span><span className="text-lg text-slate-400 ml-1">ヶ月</span></div>
-                                    <div><span className="text-3xl md:text-4xl font-bold text-yellow-400 countdown-num">{result.days}</span><span className="text-lg text-slate-400 ml-1">日</span></div>
-                                </div>
+                        <div class="result-box">
+                            <div style={{ textAlign: 'center' }}>
+                                あなたは現在...<br />
+                                <span class="age-num">{result.age} 歳</span> です！
                             </div>
-
-                            {/* 統計カード */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <StatCard emoji="📅" value={result.totalDays.toLocaleString()} label="生まれてからの日数" color="text-amber-400" />
-                                <StatCard emoji="📆" value={result.totalWeeks.toLocaleString()} label="生まれてからの週数" color="text-orange-400" />
-                                <StatCard emoji="🗓️" value={result.totalMonths.toLocaleString()} label="生まれてからの月数" color="text-yellow-400" />
-                                <StatCard emoji="⏰" value={result.totalHours.toLocaleString()} label="生まれてからの時間" color="text-red-400" />
+                            <hr style={{ border: '1px dashed #f8bbd0' }} />
+                            <div class="sub-info">
+                                🌟 生まれてから：<b>{result.diffDays.toLocaleString()} 日目</b><br />
+                                🐾 干支：<b>{result.eto}</b><br />
+                                ✨ 星座：<b>{result.zodiac}</b>
                             </div>
-
-                            {/* 誕生日カウントダウン */}
-                            <div className="glass rounded-2xl p-6 shadow-xl text-center">
-                                <div className="text-slate-400 text-sm mb-2">🎉 次の誕生日（{result.nextAge}歳）まで</div>
-                                <div className="text-4xl md:text-5xl font-bold text-emerald-400 countdown-num">
-                                    あと {result.daysUntilBday} 日
-                                </div>
-                                <div className="w-full bg-slate-800 rounded-full h-3 mt-4">
-                                    <div className="h-3 rounded-full bg-gradient-to-r from-amber-500 to-emerald-500 transition-all" style={{ width: `${Math.round((365 - result.daysUntilBday) / 365 * 100)}%` }}></div>
-                                </div>
-                            </div>
-
-                            {/* プロフィール情報 */}
-                            <div className="glass rounded-2xl p-6 shadow-xl">
-                                <h3 className="text-lg font-semibold mb-4 flex items-center"><span className="mr-2">✨</span> プロフィール</h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/30 text-center">
-                                        <div className="text-2xl mb-1">{result.zodiac.split(' ')[1]}</div>
-                                        <div className="text-white font-semibold">{result.zodiac.split(' ')[0]}</div>
-                                        <div className="text-xs text-slate-400 mt-1">星座</div>
-                                    </div>
-                                    <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/30 text-center">
-                                        <div className="text-2xl mb-1">🐾</div>
-                                        <div className="text-white font-semibold">{result.eto}</div>
-                                        <div className="text-xs text-slate-400 mt-1">干支</div>
-                                    </div>
-                                    <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/30 text-center">
-                                        <div className="text-2xl mb-1">📖</div>
-                                        <div className="text-white font-semibold">{result.dayOfWeek}</div>
-                                        <div className="text-xs text-slate-400 mt-1">生まれた曜日</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </>
+                        </div>
                     )}
+                    <div style={{ fontSize: '11px', color: '#888', marginTop: '10px' }}>
+                        ※正確な年齢（満年齢）を表示しています。
+                    </div>
                 </div>
             );
         };
+
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-
-<!-- admax -->
-<script src="https://adm.shinobi.jp/s/5dfe8bfce49a43ffe78096b109972b5b"></script>
-<!-- admax -->
 </body>
 
 </html>
